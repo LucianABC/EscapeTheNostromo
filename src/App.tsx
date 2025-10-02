@@ -10,65 +10,68 @@ import { levels } from './data/levels';
 
 
 function App() {
+  const yesButtonRef = useRef<HTMLButtonElement>(null);
+  const noButtonRef = useRef<HTMLButtonElement>(null)
+
   const [levelIdx, setLevelIdx] = useState(0);
   const [questionIdx, setQuestionIdx] = useState(0);
   const [screen, setScreen] = useState(<StartMenu />)
 
   useEffect(() => {
     yesButtonRef?.current?.focus();
-    // add enter key listener to enter the option
-  }, [])
+  }, [levelIdx, questionIdx])
 
-  const yesButtonRef = useRef<HTMLButtonElement>(null);
-  const noButtonRef = useRef<HTMLButtonElement>(null)
-
-  const nextLevel = () => {
-    setLevelIdx((prevVal) => prevVal + 1);
-  }
-
-  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
-    const { target } = e;
-
-    if (levelIdx === levels.length - 1 && questionIdx === levels[levelIdx].questions.length - 1) {
-      nextLevel();
-    }
-    console.log({ levelIdx, questionIdx, target })
-
-    if ((target as HTMLButtonElement).id === 'Si') {
-      if (levelIdx === 0) {
-        nextLevel();
-        return;
-      }
-      // guardar rta
-    }
-    if ((target as HTMLButtonElement).id === 'No') {
-      if (levelIdx === 0) {
-        setLevelIdx(levels.length); // que te mande al ultimo nivel/pantalle de end
-        return;
-      }
-      // guardar rta
-    }
-
-    nextLevel();
-  }
   useEffect(() => {
     const _screen = getScreen();
     setScreen(_screen)
-  }, [levelIdx])
+  }, [levelIdx, questionIdx])
+
+
+
+  const nextLevel = () => {
+    setLevelIdx((prevVal) => prevVal + 1);
+    setQuestionIdx(0);
+  }
+
+  const nextQuestion = () => {
+    console.log('next question')
+    setQuestionIdx((prevVal) => prevVal + 1);
+  }
+
+  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
+    const { currentTarget } = e;
+    const buttonPressed = (currentTarget as HTMLButtonElement).id;
+
+    if (levelIdx === 0) {
+      // Start menu: te lleva al primer nivel o la pantalla de END.
+      buttonPressed === 'Si' ? nextLevel() : setLevelIdx(levels.length + 1);
+      return;
+    }
+
+    const currentLevel = levels[levelIdx - 1];
+    const levelQuestions = currentLevel.questions;
+
+    if (questionIdx === (levelQuestions.length - 1)) {
+      nextLevel();
+      return
+    }
+
+    nextQuestion();
+    return
+  }
 
   const getScreen = () => {
     switch (levelIdx) {
       case 0:
         return <StartMenu />
 
-      case levels.length:
+      case levels.length + 1:
         return <GameEnded />
 
       default:
         return <PlayingLevel levelNumber={levelIdx} questionIdx={questionIdx} />
     }
   }
-
 
   return (<div id='App'>
     <header>
@@ -80,7 +83,7 @@ function App() {
       {screen}
       <footer>
         <h4>
-          SELECT AND PRESS ENTER  ::
+          SELECCIONA UNA OPCIÓN Y PRESIONA ENTER  ::
         </h4>
         <div id='button-container'>
           <Button id='Si' ref={yesButtonRef} onClick={handleClick}>Si</Button><Button id='No' onClick={handleClick} ref={noButtonRef}>No</Button>

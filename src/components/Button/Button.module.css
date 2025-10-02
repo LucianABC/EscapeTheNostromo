@@ -9,13 +9,19 @@
   cursor: pointer;
   display: inline-flex;
 
-  & p{
-    margin:0;
+  & p {
+    margin: 0;
   }
+
   &:hover {
     font-size: 22px;
   }
-  &:focus{
+
+  &:focus {
     font-size: 22px;
+  }
+
+  &:focus-visible {
+    outline: none;
   }
 }

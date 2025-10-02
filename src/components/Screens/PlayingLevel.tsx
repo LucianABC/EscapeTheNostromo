@@ -1,14 +1,18 @@
-import  React  from 'react';
+import React from 'react';
 import { levels } from '../../data/levels';
 
 interface PlayingLevelProps {
     levelNumber: number;
-    questionIdx?: number;
+    questionIdx: number;
 }
 
 const PlayingLevel: React.FC<PlayingLevelProps> = ({ levelNumber, questionIdx }) => {
+    const levelIdx = levelNumber - 1;
     return (
-        <>   <h4>{levels[levelNumber].title}</h4>{levelNumber}</>
+        <>
+        <h4>{levels[levelIdx].title}</h4>
+        <p>{levels[levelIdx].questions[questionIdx].question}</p>
+        </>
     )
 }
 export default PlayingLevel;
