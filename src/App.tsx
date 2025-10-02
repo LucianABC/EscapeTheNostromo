@@ -1,29 +1,74 @@
-import React, { MouseEvent, useState, useRef, useEffect } from 'react';
+import React, { MouseEvent, useState, useRef, useEffect, useMemo } from 'react';
 import './App.css';
-import Button from './Button';
+import Button from './components/Button/Button';
 import WYLogo from './assets/WY-LOGO.png'
+import StartMenu from './components/Screens/StartMenu';
+import PlayingLevel from './components/Screens/PlayingLevel';
+import GameEnded from './components/Screens/GameEnded';
+import { levels } from './data/levels';
+
+
 
 function App() {
-  const [level, setLevel] = useState();
+  const [levelIdx, setLevelIdx] = useState(0);
+  const [questionIdx, setQuestionIdx] = useState(0);
+  const [screen, setScreen] = useState(<StartMenu />)
+
+  useEffect(() => {
+    yesButtonRef?.current?.focus();
+    // add enter key listener to enter the option
+  }, [])
+
   const yesButtonRef = useRef<HTMLButtonElement>(null);
   const noButtonRef = useRef<HTMLButtonElement>(null)
-  const [focusedItem, setFocusedItem] = useState(yesButtonRef);
+
+  const nextLevel = () => {
+    setLevelIdx((prevVal) => prevVal + 1);
+  }
 
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
     const { target } = e;
-    console.log({ target, e })
+
+    if (levelIdx === levels.length - 1 && questionIdx === levels[levelIdx].questions.length - 1) {
+      nextLevel();
+    }
+    console.log({ levelIdx, questionIdx, target })
 
     if ((target as HTMLButtonElement).id === 'Si') {
-      console.log('SIIIIIII')
+      if (levelIdx === 0) {
+        nextLevel();
+        return;
+      }
+      // guardar rta
     }
     if ((target as HTMLButtonElement).id === 'No') {
-      console.log('BOOOOOOOOOOOOOOOOOOOOOOOO')
+      if (levelIdx === 0) {
+        setLevelIdx(levels.length); // que te mande al ultimo nivel/pantalle de end
+        return;
+      }
+      // guardar rta
+    }
+
+    nextLevel();
+  }
+  useEffect(() => {
+    const _screen = getScreen();
+    setScreen(_screen)
+  }, [levelIdx])
+
+  const getScreen = () => {
+    switch (levelIdx) {
+      case 0:
+        return <StartMenu />
+
+      case levels.length:
+        return <GameEnded />
+
+      default:
+        return <PlayingLevel levelNumber={levelIdx} questionIdx={questionIdx} />
     }
   }
 
-  useEffect(() => {
-    focusedItem?.current?.focus();
-  }, [])
 
   return (<div id='App'>
     <header>
@@ -31,29 +76,14 @@ function App() {
       <h3>6000</h3>
       <img src={WYLogo} />
     </header>
-    <div id='menu-container'>
-      <h1>NOSTROMO</h1>
-      <article>
-        <p className='line-1'><b>Sistemas vitales:</b> operativos.<br /></p>
-        <p className='line-2'><b>Señales externas: </b>silencio.</p>
-
-        <p className='line-3'>Te has conectado al núcleo de mando.</p>
-        <p className='line-4'>MU/TH/UR controlará el viaje y hará preguntas. </p>
-        <p className='line-5'>Cada respuesta correcta mantiene la nave estable. </p>
-        <p className='line-6'>Cada error abre un resquicio… algo podría usarlo.</p>
-
-        <h4 className='line-7'>Responde sólo con SÍ o NO.</h4>
-        <h4 className='line-8'>Mantén la calma.</h4>
-        <h4 className='line-9'>Piensa antes de responder.</h4>
-
-      </article>
+    <div id='content'>
+      {screen}
       <footer>
         <h4>
-
           SELECT AND PRESS ENTER  ::
         </h4>
         <div id='button-container'>
-          <Button ref={yesButtonRef} onClick={handleClick}>Yes</Button><Button onClick={handleClick} ref={noButtonRef}>No</Button>
+          <Button id='Si' ref={yesButtonRef} onClick={handleClick}>Si</Button><Button id='No' onClick={handleClick} ref={noButtonRef}>No</Button>
         </div>
       </footer>
     </div>
