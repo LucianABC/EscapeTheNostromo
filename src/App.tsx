@@ -7,8 +7,6 @@ import PlayingLevel from './components/Screens/PlayingLevel';
 import GameEnded from './components/Screens/GameEnded';
 import { levels } from './data/levels';
 
-
-
 function App() {
   const yesButtonRef = useRef<HTMLButtonElement>(null);
   const noButtonRef = useRef<HTMLButtonElement>(null)
@@ -25,8 +23,6 @@ function App() {
     const _screen = getScreen();
     setScreen(_screen)
   }, [levelIdx, questionIdx])
-
-
 
   const nextLevel = () => {
     setLevelIdx((prevVal) => prevVal + 1);
@@ -45,6 +41,13 @@ function App() {
     if (levelIdx === 0) {
       // Start menu: te lleva al primer nivel o la pantalla de END.
       buttonPressed === 'Si' ? nextLevel() : setLevelIdx(levels.length + 1);
+      return;
+    }
+
+    if (levelIdx === levels.length + 1) {
+      // Game Ended: te lleva al start menu o cierra la ventana.
+      buttonPressed === 'Si' ?
+        (setLevelIdx(0)) : window.close()
       return;
     }
 
@@ -72,7 +75,7 @@ function App() {
         return <PlayingLevel levelNumber={levelIdx} questionIdx={questionIdx} />
     }
   }
-
+  
   return (<div id='App'>
     <header>
       <h2>MU / TH / UR</h2>

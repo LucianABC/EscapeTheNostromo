@@ -175,7 +175,15 @@ h3,
 h4 {
   font-weight: 100;
   margin: 0;
+  text-transform: uppercase;
 }
+
+h4 {
+  text-transform: none;
+  
+    align-self: flex-start;
+}
+
 
 p {
   font-family: monospace;
@@ -189,9 +197,7 @@ footer {
   justify-content: center;
   margin-top: 25px;
   width: 100%;
-  h4 {
-    align-self: flex-start;
-  }
+ 
 
 }
 #content {
@@ -237,11 +243,6 @@ article {
     overflow: hidden;
     white-space: nowrap;
     font-family: monospace;
-    /* width: 0; */
-    /*  animation:
-      typing 4s steps(40, end) forwards,
-      blink-caret .75s step-end infinite;
-  */
   }
 }
 

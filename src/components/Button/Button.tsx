@@ -6,19 +6,30 @@ interface Props extends HTMLAttributes<HTMLButtonElement> {
 }
 
 const Button: React.FC<Props> = ({ children, ref, ...props }) => {
-  const [updatedChildren, setUpdatedChildren] = useState(children)
+  const [updatedChildren, setUpdatedChildren] = useState(children);
+
+  const handleMouseEnter = () => {
+    ref.current.focus();
+  }
 
   const handleFocus = () => {
     const _children = (<>
       <p>&gt;{children}<span className="blink">_</span></p>
     </>)
-    setUpdatedChildren(_children)
+    setUpdatedChildren(_children);
   }
 
   const handleBlur = () => {
-    setUpdatedChildren(children)
+    setUpdatedChildren(children);
   }
-  return (<button ref={ref} className={styles.button} onFocus={handleFocus} onBlur={handleBlur} {...props}>{updatedChildren}</button>)
+  return (<button
+    ref={ref}
+    className={styles.button}
+    onMouseEnter={handleMouseEnter}
+    onFocus={handleFocus}
+    onBlur={handleBlur} {...props}>
+    {updatedChildren}
+  </button>)
 }
 
 export default Button;

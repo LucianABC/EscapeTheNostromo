@@ -10,7 +10,7 @@ const PlayingLevel: React.FC<PlayingLevelProps> = ({ levelNumber, questionIdx })
     const levelIdx = levelNumber - 1;
     return (
         <>
-        <h4>{levels[levelIdx].title}</h4>
+        <h3>{levels[levelIdx].title}</h3>
         <p>{levels[levelIdx].questions[questionIdx].question}</p>
         </>
     )
